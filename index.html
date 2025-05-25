@@ -41,7 +41,7 @@
 </head>
 <body>
   <h1>Headtag & Gangtag Preview Viewer</h1>
-  <p>Enter your tag using HUD color codes into text box below. <code>Developed by Arthur V. </code></p>
+  <p>Enter your tag using HUD color codes into text box below. <code style="color: #FF69B4;">Developed by Arthur V.</code></p>
   <a href="https://docs.fivem.net/docs/game-references/hud-colors/#list-of-default-colors" 
    style="font-weight: bold; color: white; text-transform: uppercase;" 
    target="_blank">
@@ -283,10 +283,9 @@
 
     };
 
-      const input = document.getElementById("tagInput");
+const input = document.getElementById("tagInput");
   const output = document.getElementById("previewOutput");
 
-  // ✅ Automatically remove formatting on paste
   input.addEventListener("paste", (e) => {
     e.preventDefault();
     const plainText = (e.clipboardData || window.clipboardData).getData("text");
@@ -296,19 +295,20 @@
     const newValue = currentValue.slice(0, selectionStart) + plainText + currentValue.slice(selectionEnd);
     input.value = newValue;
     input.setSelectionRange(selectionStart + plainText.length, selectionStart + plainText.length);
-    renderPreview(); // Update preview right after paste
+    renderPreview();
   });
 
-  // ✅ Listen to regular typing
   input.addEventListener("input", renderPreview);
 
   function renderPreview() {
-    const text = input.value;
-    const tagHtml = parseTagToHtml(text);
-    output.innerHTML = tagHtml;
+    output.innerHTML = parseTagToHtml(input.value);
   }
 
   function parseTagToHtml(input) {
+  
+    input = input.replace(/HUDCOLOUR/g, "HUD_COLOUR_");
+
+
     const regex = /HUD_COLOUR_[A-Z_]+/g;
     let match;
     let lastIndex = 0;
@@ -320,7 +320,6 @@
       for (let char of rawText) {
         result += `<span class="char" style="color:${currentColor}">${char}</span>`;
       }
-
       const colorCode = match[0];
       currentColor = colorMap[colorCode] || "#FFFFFF";
       lastIndex = match.index + colorCode.length;
@@ -334,27 +333,6 @@
     return result;
   }
 
-  // ✅ Initial example
-  input.value = "HUD_COLOUR_REDDARKH" +
-                "HUD_COLOUR_PURE_WHITEE" +
-                "HUD_COLOUR_REDDARKL" +
-                "HUD_COLOUR_PURE_WHITEL" +
-                "HUD_COLOUR_REDDARKO";
+  input.value = "HUD_COLOUR_REDDARKH HUDCOLOURSCRIPT_VARIABLEE HUD_COLOUR_GREENO";
   renderPreview();
 </script>
-
-<script>
-document.addEventListener("contextmenu", event => event.preventDefault());
-document.addEventListener("keydown", event => {
-    if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) {
-        event.preventDefault();
-    }
-});
-</script>
-<h1 style="color: #B200FF; font-weight: bold;">
-  <a href="https://discord.com/invite/calirp" target="_blank" style="color: #B200FF; text-decoration: none;">
-    discord.gg/calirp
-  </a>
-</h1>
-</body>
-</html>
