@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FiveM Tag Preview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      padding: 30px;
+    }
+    h1 {
+      color: #00b4d8;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      background: #222;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+    }
+    .preview {
+      margin-top: 20px;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      min-height: 50px;
+      font-weight: bold;
+      font-size: 24px;
+      white-space: pre-wrap;
+    }
+    .char {
+      display: inline;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+  <h1>Headtag & Gangtag Preview Viewer</h1>
+  <p>Enter your tag using HUD color codes like: <code>HUD_COLOUR_REDDARK H HUD_COLOUR_PURE_WHITE E</code></p>
+  <a href="https://docs.fivem.net/docs/game-references/hud-colors/#list-of-default-colors" 
+   style="font-weight: bold; color: white; text-transform: uppercase;" 
+   target="_blank">
+   FIND COLOR CODES HERE
+</a>
+  <textarea id="tagInput" rows="4" placeholder="HUD_COLOUR_REDDARK H HUD_COLOUR_PURE_WHITE E HUD_COLOUR_REDDARK L HUD_COLOUR_PURE_WHITE L HUD_COLOUR_REDDARK O"></textarea>
+  <div class="preview" id="previewOutput"></div>
+
+  <script>
+    const colorMap = {
+      HUD_COLOUR_PURE_WHITE: "#FFFFFF",
+      HUD_COLOUR_REDDARK: "#7C0000",
+      HUD_COLOUR_RED: "#F21C0A",
+      HUD_COLOUR_GREEN: "#21C72E",
+      HUD_COLOUR_BLUEDARK: "#0B2854",
+      HUD_COLOUR_BLUE: "#0096FF",
+      HUD_COLOUR_YELLOW: "#FFD800",
+      HUD_COLOUR_ORANGE: "#FFA500",
+      HUD_COLOUR_PURPLE: "#B200FF",
+      HUD_COLOUR_PINK: "#FF69B4",
+      HUD_COLOUR_GREY: "#808080",
+      HUD_COLOUR_BLACK: "#000000",
+      HUD_COLOUR_GOLD: "#FFD700",
+      HUD_COLOUR_SILVER: "#C0C0C0",
+      HUD_COLOUR_DAMAGE: "#C25050",
+      HUD_COLOUR_PINKLIGHT: "#FC73C9",
+      HUD_COLOUR_PM_MITEM_HIGHLIGHT: "#FCB131",
+      HUD_COLOUR_SCRIPT_VARIABLE: "#000000",
+      HUD_COLOUR_YOGA: "#6DF7CC",
+      HUD_COLOUR_TENNIS: "#F16522",
+      HUD_COLOUR_GOLF: "#D6BD61",
+      HUD_COLOUR_SOCIAL_CLUB: "#EA991C",
+      HUD_COLOUR_PLATFORM_BLUE: "#0B377B",
+      HUD_COLOUR_PLATFORM_GREEN: "#92C83E",
+      HUD_COLOUR_PLATFORM_GREY: "#EA991C",
+      HUD_COLOUR_FACEBOOK_BLUE: "#425994",
+      HUD_COLOUR_INGAME_BG: "#000000",
+      HUD_COLOUR_WAYPOINT: "#A44CF2",
+      HUD_COLOUR_MICHAEL: "#65B4D4",
+      HUD_COLOUR_FRANKLIN: "#ABEDAB",
+      HUD_COLOUR_TREVOR: "#FFA357",
+      HUD_COLOUR_GOLF_P2: "#EBEF1E",
+      HUD_COLOUR_GOLF_P3: "#FF950E",
+      HUD_COLOUR_GOLF_P4: "#F63CA1",
+      HUD_COLOUR_WAYPOINTLIGHT: "#D2A6F9",
+      HUD_COLOUR_WAYPOINTDARK: "#522679",
+      HUD_COLOUR_PANEL_LIGHT: "#000000",
+      HUD_COLOUR_MICHAEL_DARK: "#486774",
+      HUD_COLOUR_FRANKLIN_DARK: "#557655",
+      HUD_COLOUR_TREVOR_DARK: "#7F512B",
+      HUD_COLOUR_PAUSEMAP_TINT: "#000000",
+      HUD_COLOUR_PAUSE_DESELECT: "#646464",
+      HUD_COLOUR_PM_WEAPONS_LOCKED: "#F0F0F0",
+      HUD_COLOUR_NORTH_BLUE: "#0096FF",
+      HUD_COLOUR_NORTH_BLUE_OFFICIAL: "#004785",
+      HUD_COLOUR_H: "#217625",
+      HUD_COLOUR_HDARK: "#256628",
+      HUD_COLOUR_T: "#EA991C",
+      HUD_COLOUR_TDARK: "#E18C08",
+      HUD_COLOUR_HSHARD: "#142800",
+      HUD_COLOUR_CONTROLLER_MICHAEL: "#30FFFF",
+      HUD_COLOUR_CONTROLLER_FRANKLIN: "#30FF00",
+      HUD_COLOUR_CONTROLLER_TREVOR: "#B05000",
+      HUD_COLOUR_CONTROLLER_CHOP: "#7F0000",
+      HUD_COLOUR_VIDEO_EDITOR_VIDEO: "#35A6E0",
+      HUD_COLOUR_VIDEO_EDITOR_AUDIO: "#A24F9D",
+      HUD_COLOUR_VIDEO_EDITOR_TEXT: "#68C08D",
+      HUD_COLOUR_HB_BLUE: "#1D6499",
+      HUD_COLOUR_HB_YELLOW: "#EA991C",
+      HUD_COLOUR_VIDEO_EDITOR_SCORE: "#F0A001",
+      HUD_COLOUR_VIDEO_EDITOR_AUDIO_FADEOUT: "#3B2239",
+      HUD_COLOUR_VIDEO_EDITOR_TEXT_FADEOUT: "#294435",
+      HUD_COLOUR_VIDEO_EDITOR_SCORE_FADEOUT: "#523A0A",
+      HUD_COLOUR_HEIST_BACKGROUND: "#256628",
+      HUD_COLOUR_VIDEO_EDITOR_AMBIENT_FADEOUT: "#504622",
+      HUD_COLOUR_G1: "#F79F7B",
+      HUD_COLOUR_G2: "#E286BB",
+      HUD_COLOUR_G3: "#EFEE97",
+      HUD_COLOUR_G4: "#71A9AF",
+      HUD_COLOUR_G5: "#A08CC1",
+      HUD_COLOUR_G6: "#8DCEA7",
+      HUD_COLOUR_G7: "#B5D6EA",
+      HUD_COLOUR_G8: "#B29084",
+      HUD_COLOUR_G9: "#008472",
+      HUD_COLOUR_G10: "#D85575",
+      HUD_COLOUR_G11: "#1E6498",
+      HUD_COLOUR_G12: "#2BB575",
+      HUD_COLOUR_G13: "#E98D4F",
+      HUD_COLOUR_G14: "#89D2D7",
+      HUD_COLOUR_G15: "#867D8D",
+      HUD_COLOUR_ADVERSARY: "#6D2221",
+      HUD_COLOUR_DEGEN_RED: "#FF0000",
+      HUD_COLOUR_DEGEN_YELLOW: "#FFFF00",
+      HUD_COLOUR_DEGEN_GREEN: "#00FF00",
+      HUD_COLOUR_DEGEN_CYAN: "#00FFFF",
+      HUD_COLOUR_DEGEN_BLUE: "#0000FF",
+      HUD_COLOUR_DEGEN_MAGENTA: "#FF00FF",
+      HUD_COLOUR_STUNT_1: "#2688EA",
+      HUD_COLOUR_STUNT_2: "#F21C0A",
+      HUD_COLOUR_SPECIAL_RACE_SERIES: "#9AB236",
+      HUD_COLOUR_SPECIAL_RACE_SERIES_DARK: "#5D6B2D",
+      HUD_COLOUR_CS: "#CEA90D",
+      HUD_COLOUR_CS_DARK: "#675406",
+      HUD_COLOUR_TECH_GREEN: "#009797",
+      HUD_COLOUR_TECH_GREEN_DARK: "#057771",
+      HUD_COLOUR_TECH_RED: "#970000",
+      HUD_COLOUR_TECH_GREEN_VERY_DARK: "#002828",
+      HUD_COLOUR_PLACEHOLDER_01: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_02: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_03: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_04: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_05: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_06: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_07: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_08: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_09: "#FFFFFF",
+      HUD_COLOUR_PLACEHOLDER_10: "#FFFFFF",
+      HUD_COLOUR_JUNK_ENERGY: "#1DEBC3"
+    };
+
+    const input = document.getElementById("tagInput");
+    const output = document.getElementById("previewOutput");
+
+    input.addEventListener("input", () => {
+      output.innerHTML = parseTagToHtml(input.value);
+    });
+
+    function parseTagToHtml(text) {
+      const tokens = text.split(/(\s+)/);
+      let currentColor = "#FFFFFF";
+      let result = "";
+
+      for (const token of tokens) {
+        if (colorMap[token]) {
+          currentColor = colorMap[token];
+          continue;
+        }
+        if (/^\s+$/.test(token)) {
+          result += token;
+          continue;
+        }
+        for (const char of token) {
+          result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+        }
+      }
+      return result;
+    }
+
+    input.value = "HUD_COLOUR_REDDARK H HUD_COLOUR_PURE_WHITE E HUD_COLOUR_REDDARK L HUD_COLOUR_PURE_WHITE L HUD_COLOUR_REDDARK O";
+    input.dispatchEvent(new Event("input"));
+  </script>
+
+<script>
+document.addEventListener("contextmenu", event => event.preventDefault());
+document.addEventListener("keydown", event => {
+    if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) {
+        event.preventDefault();
+    }
+});
+</script>
+<h1 style="color: #B200FF; font-weight: bold;">
+  <a href="https://discord.com/invite/calirp" target="_blank" style="color: #B200FF; text-decoration: none;">
+    discord.gg/calirp
+  </a>
+</h1>
+
+  <br /><br /><br /><br />
+  <small>Made by Arthur V</small>
+</body>
+</html>
