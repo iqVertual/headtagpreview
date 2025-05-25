@@ -323,23 +323,25 @@ input.addEventListener("keydown", function(e) {
 function parseTagToHtml(input) {
   input = input.replace(/HUDCOLOUR/g, "HUD_COLOUR_");
 
-
-  const regex = /\((HUD_COLOUR_[A-Z_]+)\)/g;
+  const regex = /\((HUD_COLOUR_[A-Z0-9_]+)\)/g;
   let match;
   let lastIndex = 0;
   let currentColor = "#FFFFFF";
   let result = "";
 
   while ((match = regex.exec(input)) !== null) {
+    // Add text before the tag, in the current color
     const rawText = input.slice(lastIndex, match.index);
     for (let char of rawText) {
       result += `<span class="char" style="color:${currentColor}">${char}</span>`;
     }
-    const colorCode = match[1]; 
+    // Update color for next text
+    const colorCode = match[1];
     currentColor = colorMap[colorCode] || "#FFFFFF";
     lastIndex = match.index + match[0].length;
   }
 
+  // Add the remaining text after the last tag
   const remaining = input.slice(lastIndex);
   for (let char of remaining) {
     result += `<span class="char" style="color:${currentColor}">${char}</span>`;
