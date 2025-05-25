@@ -49,7 +49,7 @@
    target="_blank">
    FIND COLOR CODES HERE
 </a>
-  <textarea id="tagInput" rows="4" placeholder="HUD_COLOUR_BLUE MadeHUD_COLOUR_PINK ByHUD_COLOUR_BLUE ArthurHUD_COLOUR_PINK V."></textarea>
+  <textarea id="tagInput" rows="4" placeholder="(HUD_COLOUR_BLUE)Made(HUD_COLOUR_PINK)By(HUD_COLOUR_BLUE)Arthur(HUD_COLOUR_PINK)V."></textarea>
   <div class="preview" id="previewOutput"></div>
 
   <script>
@@ -306,37 +306,38 @@ const input = document.getElementById("tagInput");
     output.innerHTML = parseTagToHtml(input.value);
   }
 
-  function parseTagToHtml(input) {
-  
-    input = input.replace(/HUDCOLOUR/g, "HUD_COLOUR_");
+
+function parseTagToHtml(input) {
+  input = input.replace(/HUDCOLOUR/g, "HUD_COLOUR_");
 
 
-    const regex = /HUD_COLOUR_[A-Z_]+/g;
-    let match;
-    let lastIndex = 0;
-    let currentColor = "#FFFFFF";
-    let result = "";
+  const regex = /\((HUD_COLOUR_[A-Z_]+)\)/g;
+  let match;
+  let lastIndex = 0;
+  let currentColor = "#FFFFFF";
+  let result = "";
 
-    while ((match = regex.exec(input)) !== null) {
-      const rawText = input.slice(lastIndex, match.index);
-      for (let char of rawText) {
-        result += `<span class="char" style="color:${currentColor}">${char}</span>`;
-      }
-      const colorCode = match[0];
-      currentColor = colorMap[colorCode] || "#FFFFFF";
-      lastIndex = match.index + colorCode.length;
-    }
-
-    const remaining = input.slice(lastIndex);
-    for (let char of remaining) {
+  while ((match = regex.exec(input)) !== null) {
+    const rawText = input.slice(lastIndex, match.index);
+    for (let char of rawText) {
       result += `<span class="char" style="color:${currentColor}">${char}</span>`;
     }
-
-    return result;
+    const colorCode = match[1]; 
+    currentColor = colorMap[colorCode] || "#FFFFFF";
+    lastIndex = match.index + match[0].length;
   }
 
-  input.value = "HUD_COLOUR_BLUE MadeHUD_COLOUR_PINK ByHUD_COLOUR_BLUE ArthurHUD_COLOUR_PINK V.";
-  renderPreview();
+  const remaining = input.slice(lastIndex);
+  for (let char of remaining) {
+    result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+  }
+
+  return result;
+}
+
+input.value = "(HUD_COLOUR_BLUE)Made(HUD_COLOUR_PINK)By(HUD_COLOUR_BLUE)Arthur(HUD_COLOUR_PINK)V.";
+renderPreview();
+
 </script>
 
 <script>
