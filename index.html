@@ -43,330 +43,318 @@
 </head>
 <body>
   <h1>Headtag & Gangtag Preview Viewer</h1>
-  <p>Enter your tag using HUD color codes into text box below. <code style="color: #FF69B4;">Developed by Arthur V.</code></p>
+  <p>Enter your tag using <b>~HC_index number~</b> color codes into text box below. <code style="color: #FF69B4;">Developed by Arthur V.</code></p>
   <a href="https://docs.fivem.net/docs/game-references/hud-colors/#list-of-default-colors" 
    style="font-weight: bold; color: white; text-transform: uppercase;" 
    target="_blank">
    FIND COLOR CODES HERE
 </a>
-  <textarea id="tagInput" rows="4" placeholder="(HUD_COLOUR_BLUE)Made(HUD_COLOUR_PINK)By(HUD_COLOUR_BLUE)Arthur(HUD_COLOUR_PINK)V."></textarea>
+  <textarea id="tagInput" rows="4" placeholder="~HC_9~Made~HC_24~ By ~HC_9~Arthur~HC_24~ V"></textarea>
   <div class="preview" id="previewOutput"></div>
 
   <script>
-    const colorMap = {
-      HUD_COLOUR_PURE_WHITE: "#FFFFFF",
-      HUD_COLOUR_REDDARK: "#7C0000",
-      HUD_COLOUR_RED: "#F21C0A",
-      HUD_COLOUR_GREEN: "#21C72E",
-      HUD_COLOUR_BLUEDARK: "#0B2854",
-      HUD_COLOUR_BLUE: "#0096FF",
-      HUD_COLOUR_YELLOW: "#FFD800",
-      HUD_COLOUR_ORANGE: "#FFA500",
-      HUD_COLOUR_PURPLE: "#B200FF",
-      HUD_COLOUR_PINK: "#FF69B4",
-      HUD_COLOUR_GREY: "#808080",
-      HUD_COLOUR_BLACK: "#000000",
-      HUD_COLOUR_GOLD: "#FFD700",
-      HUD_COLOUR_SILVER: "#C0C0C0",
-      HUD_COLOUR_DAMAGE: "#C25050",
-      HUD_COLOUR_PINKLIGHT: "#FC73C9",
-      HUD_COLOUR_PM_MITEM_HIGHLIGHT: "#FCB131",
-      HUD_COLOUR_SCRIPT_VARIABLE: "#000000",
-      HUD_COLOUR_YOGA: "#6DF7CC",
-      HUD_COLOUR_TENNIS: "#F16522",
-      HUD_COLOUR_GOLF: "#D6BD61",
-      HUD_COLOUR_SOCIAL_CLUB: "#EA991C",
-      HUD_COLOUR_PLATFORM_BLUE: "#0B377B",
-      HUD_COLOUR_PLATFORM_GREEN: "#92C83E",
-      HUD_COLOUR_PLATFORM_GREY: "#EA991C",
-      HUD_COLOUR_FACEBOOK_BLUE: "#425994",
-      HUD_COLOUR_INGAME_BG: "#000000",
-      HUD_COLOUR_WAYPOINT: "#A44CF2",
-      HUD_COLOUR_MICHAEL: "#65B4D4",
-      HUD_COLOUR_FRANKLIN: "#ABEDAB",
-      HUD_COLOUR_TREVOR: "#FFA357",
-      HUD_COLOUR_GOLF_P2: "#EBEF1E",
-      HUD_COLOUR_GOLF_P3: "#FF950E",
-      HUD_COLOUR_GOLF_P4: "#F63CA1",
-      HUD_COLOUR_WAYPOINTLIGHT: "#D2A6F9",
-      HUD_COLOUR_WAYPOINTDARK: "#522679",
-      HUD_COLOUR_PANEL_LIGHT: "#000000",
-      HUD_COLOUR_MICHAEL_DARK: "#486774",
-      HUD_COLOUR_FRANKLIN_DARK: "#557655",
-      HUD_COLOUR_TREVOR_DARK: "#7F512B",
-      HUD_COLOUR_PAUSEMAP_TINT: "#000000",
-      HUD_COLOUR_PAUSE_DESELECT: "#646464",
-      HUD_COLOUR_PM_WEAPONS_LOCKED: "#F0F0F0",
-      HUD_COLOUR_NORTH_BLUE: "#0096FF",
-      HUD_COLOUR_NORTH_BLUE_OFFICIAL: "#004785",
-      HUD_COLOUR_H: "#217625",
-      HUD_COLOUR_HDARK: "#256628",
-      HUD_COLOUR_T: "#EA991C",
-      HUD_COLOUR_TDARK: "#E18C08",
-      HUD_COLOUR_HSHARD: "#142800",
-      HUD_COLOUR_CONTROLLER_MICHAEL: "#30FFFF",
-      HUD_COLOUR_CONTROLLER_FRANKLIN: "#30FF00",
-      HUD_COLOUR_CONTROLLER_TREVOR: "#B05000",
-      HUD_COLOUR_CONTROLLER_CHOP: "#7F0000",
-      HUD_COLOUR_VIDEO_EDITOR_VIDEO: "#35A6E0",
-      HUD_COLOUR_VIDEO_EDITOR_AUDIO: "#A24F9D",
-      HUD_COLOUR_VIDEO_EDITOR_TEXT: "#68C08D",
-      HUD_COLOUR_HB_BLUE: "#1D6499",
-      HUD_COLOUR_HB_YELLOW: "#EA991C",
-      HUD_COLOUR_VIDEO_EDITOR_SCORE: "#F0A001",
-      HUD_COLOUR_VIDEO_EDITOR_AUDIO_FADEOUT: "#3B2239",
-      HUD_COLOUR_VIDEO_EDITOR_TEXT_FADEOUT: "#294435",
-      HUD_COLOUR_VIDEO_EDITOR_SCORE_FADEOUT: "#523A0A",
-      HUD_COLOUR_HEIST_BACKGROUND: "#256628",
-      HUD_COLOUR_VIDEO_EDITOR_AMBIENT_FADEOUT: "#504622",
-      HUD_COLOUR_G1: "#F79F7B",
-      HUD_COLOUR_G2: "#E286BB",
-      HUD_COLOUR_G3: "#EFEE97",
-      HUD_COLOUR_G4: "#71A9AF",
-      HUD_COLOUR_G5: "#A08CC1",
-      HUD_COLOUR_G6: "#8DCEA7",
-      HUD_COLOUR_G7: "#B5D6EA",
-      HUD_COLOUR_G8: "#B29084",
-      HUD_COLOUR_G9: "#008472",
-      HUD_COLOUR_G10: "#D85575",
-      HUD_COLOUR_G11: "#1E6498",
-      HUD_COLOUR_G12: "#2BB575",
-      HUD_COLOUR_G13: "#E98D4F",
-      HUD_COLOUR_G14: "#89D2D7",
-      HUD_COLOUR_G15: "#867D8D",
-      HUD_COLOUR_ADVERSARY: "#6D2221",
-      HUD_COLOUR_DEGEN_RED: "#FF0000",
-      HUD_COLOUR_DEGEN_YELLOW: "#FFFF00",
-      HUD_COLOUR_DEGEN_GREEN: "#00FF00",
-      HUD_COLOUR_DEGEN_CYAN: "#00FFFF",
-      HUD_COLOUR_DEGEN_BLUE: "#0000FF",
-      HUD_COLOUR_DEGEN_MAGENTA: "#FF00FF",
-      HUD_COLOUR_STUNT_1: "#2688EA",
-      HUD_COLOUR_STUNT_2: "#F21C0A",
-      HUD_COLOUR_SPECIAL_RACE_SERIES: "#9AB236",
-      HUD_COLOUR_SPECIAL_RACE_SERIES_DARK: "#5D6B2D",
-      HUD_COLOUR_CS: "#CEA90D",
-      HUD_COLOUR_CS_DARK: "#675406",
-      HUD_COLOUR_TECH_GREEN: "#009797",
-      HUD_COLOUR_TECH_GREEN_DARK: "#057771",
-      HUD_COLOUR_TECH_RED: "#970000",
-      HUD_COLOUR_TECH_GREEN_VERY_DARK: "#002828",
-      HUD_COLOUR_PLACEHOLDER_01: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_02: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_03: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_04: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_05: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_06: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_07: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_08: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_09: "#FFFFFF",
-      HUD_COLOUR_PLACEHOLDER_10: "#FFFFFF",
-      HUD_COLOUR_JUNK_ENERGY: "#1DEBC3",
-      HUD_COLOUR_YELLOWLIGHT: "#feeba9",
-      HUD_COLOUR_WHITE: "#f0f0f0",
-      HUD_COLOUR_GREYLIGHT: "#cdcdcd",
-      HUD_COLOUR_GREYDARK: "#4d4d4d",
-      HUD_COLOUR_REDLIGHT: "#f09999",
-      HUD_COLOUR_BLUELIGHT: "#aedbf2",
-      HUD_COLOUR_YELLOWDARK: "#7e6b29",
-      HUD_COLOUR_ORANGELIGHT: "#ffc2aa",
-      HUD_COLOUR_ORANGEDARK: "#7f422a",
-      HUD_COLOUR_GREENLIGHT: "#b9e6b9",
-      HUD_COLOUR_GREENDARK: "#396639",
-      HUD_COLOUR_PURPLELIGHT: "#c0b3ef",
-      HUD_COLOUR_PURPLEDARK: "#43396f",
-      HUD_COLOUR_PINK: "#cb3694",
-      HUD_COLOUR_RADAR_HEALTH: "#359a47",
-      HUD_COLOUR_RADAR_ARMOUR: "#5db6e5",
-      HUD_COLOUR_RADAR_DAMAGE: "#eb2427",
-      HUD_COLOUR_NET_PLAYER1: "#c25050",
-      HUD_COLOUR_NET_PLAYER2: "#9c6eaf",
-      HUD_COLOUR_NET_PLAYER3: "#ff7bc4",
-      HUD_COLOUR_NET_PLAYER4: "#f79f7b",
-      HUD_COLOUR_NET_PLAYER5: "#b29084",
-      HUD_COLOUR_NET_PLAYER6: "#8dcea7",
-      HUD_COLOUR_NET_PLAYER7: "#71a9af",
-      HUD_COLOUR_NET_PLAYER8: "#d3d1e7",
-      HUD_COLOUR_NET_PLAYER9: "#907f99",
-      HUD_COLOUR_NET_PLAYER10: "#6ac4bf",
-      HUD_COLOUR_NET_PLAYER11: "#d6c499",
-      HUD_COLOUR_NET_PLAYER12: "#ea8e50",
-      HUD_COLOUR_NET_PLAYER13: "#4c6575",
-      HUD_COLOUR_NET_PLAYER14: "#41232f",
-      HUD_COLOUR_NET_PLAYER15: "#48473d",
-      HUD_COLOUR_NET_PLAYER16: "#553a2f",
-      HUD_COLOUR_NET_PLAYER17: "#575454",
-      HUD_COLOUR_NET_PLAYER18: "#74474d",
-      HUD_COLOUR_NET_PLAYER19: "#5d6b2d",
-      HUD_COLOUR_NET_PLAYER20: "#063d2b",
-      HUD_COLOUR_NET_PLAYER21: "#3d627f",
-      HUD_COLOUR_NET_PLAYER22: "#551e73",
-      HUD_COLOUR_NET_PLAYER23: "#675406",
-      HUD_COLOUR_NET_PLAYER24: "#233156",
-      HUD_COLOUR_NET_PLAYER25: "#15535c",
-      HUD_COLOUR_NET_PLAYER26: "#5d623e",
-      HUD_COLOUR_NET_PLAYER27: "#64707f",
-      HUD_COLOUR_NET_PLAYER28: "#78784b",
-      HUD_COLOUR_NET_PLAYER29: "#984c5d",
-      HUD_COLOUR_NET_PLAYER30: "#7c4545",
-      HUD_COLOUR_NET_PLAYER31: "#0a2b32",
-      HUD_COLOUR_NET_PLAYER32: "#5f5f0a",
-      HUD_COLOUR_SIMPLEBLIP_DEFAULT: "#9fc9a6",
-      HUD_COLOUR_MENU_BLUE: "#8c8c8c",
-      HUD_COLOUR_MENU_GREY_LIGHT: "#8c8c8c",
-      HUD_COLOUR_MENU_YELLOW: "#f0a000",
-      HUD_COLOUR_MENU_YELLOW_DARK: "#f0a000",
-      HUD_COLOUR_MENU_GREEN: "#f0a000",
-      HUD_COLOUR_MENU_GREY: "#8c8c8c",
-      HUD_COLOUR_MENU_GREY_DARK: "#3c3c3c",
-      HUD_COLOUR_MENU_HIGHLIGHT: "#1e1e1e",
-      HUD_COLOUR_MENU_STANDARD: "#8c8c8c",
-      HUD_COLOUR_NET_PLAYER1_DARK: "#5d2727",
-      HUD_COLOUR_NET_PLAYER2_DARK: "#4d3759",
-      HUD_COLOUR_NET_PLAYER3_DARK: "#7c3e63",
-      HUD_COLOUR_NET_PLAYER4_DARK: "#785050",
-      HUD_COLOUR_NET_PLAYER5_DARK: "#574842",
-      HUD_COLOUR_NET_PLAYER6_DARK: "#4a6753",
-      HUD_COLOUR_NET_PLAYER7_DARK: "#3c5558",
-      HUD_COLOUR_NET_PLAYER8_DARK: "#696940",
-      HUD_COLOUR_NET_PLAYER9_DARK: "#483f4c",
-      HUD_COLOUR_NET_PLAYER10_DARK: "#35625f",
-      HUD_COLOUR_NET_PLAYER11_DARK: "#6b624c",
-      HUD_COLOUR_NET_PLAYER12_DARK: "#754728",
-      HUD_COLOUR_NET_PLAYER13_DARK: "#4c6575",
-      HUD_COLOUR_NET_PLAYER14_DARK: "#41232f",
-      HUD_COLOUR_NET_PLAYER15_DARK: "#48473d",
-      HUD_COLOUR_NET_PLAYER16_DARK: "#553a2f",
-      HUD_COLOUR_NET_PLAYER17_DARK: "#575454",
-      HUD_COLOUR_NET_PLAYER18_DARK: "#74474d",
-      HUD_COLOUR_NET_PLAYER19_DARK: "#5d6b2d",
-      HUD_COLOUR_NET_PLAYER20_DARK: "#063d2b",
-      HUD_COLOUR_NET_PLAYER21_DARK: "#3d627f",
-      HUD_COLOUR_NET_PLAYER22_DARK: "#551e73",
-      HUD_COLOUR_NET_PLAYER23_DARK: "#675406",
-      HUD_COLOUR_NET_PLAYER24_DARK: "#233156",
-      HUD_COLOUR_NET_PLAYER25_DARK: "#15535c",
-      HUD_COLOUR_NET_PLAYER26_DARK: "#5d623e",
-      HUD_COLOUR_NET_PLAYER27_DARK: "#64707f",
-      HUD_COLOUR_NET_PLAYER28_DARK: "#78784b",
-      HUD_COLOUR_NET_PLAYER29_DARK: "#984c5d",
-      HUD_COLOUR_NET_PLAYER30_DARK: "#7c4545",
-      HUD_COLOUR_NET_PLAYER31_DARK: "#0a2b32",
-      HUD_COLOUR_NET_PLAYER32_DARK: "#5f5f0a",
-      HUD_COLOUR_BRONZE: "#b48261",
-      HUD_COLOUR_PLATINUM: "#a6ddbe",
-      HUD_COLOUR_GANG1: "#1d6499",
-      HUD_COLOUR_GANG2: "#d6740f",
-      HUD_COLOUR_GANG3: "#877d8e",
-      HUD_COLOUR_GANG4: "#e577b9",
-      HUD_COLOUR_SAME_CREW: "#fcefa6",
-      HUD_COLOUR_FREEMODE: "#2d6eb9",
-      HUD_COLOUR_PAUSE_BG: "#343434",
-      HUD_COLOUR_FRIENDLY: "#5db6e5",
-      HUD_COLOUR_ENEMY: "#c25050",
-      HUD_COLOUR_LOCATION: "#f0c850",
-      HUD_COLOUR_PICKUP: "#72cc72",
-      HUD_COLOUR_PAUSE_SINGLEPLAYER: "#72cc72",
-      HUD_COLOUR_FREEMODE_DARK: "#16375c",
-      HUD_COLOUR_INACTIVE_MISSION: "#9a9a9a",
-      HUD_COLOUR_SHOOTING_RANGE: "#701919",
-      HUD_COLOUR_DARTS: "#72cc72",
-      HUD_COLOUR_OBJECTIVE_ROUTE: "#f0c850",
-      HUD_COLOUR_PM_WEAPONS_PURCHASABLE: "#2d6eb9",
-      HUD_COLOUR_END_SCREEN_BG: "#343434",
-      HUD_COLOUR_CHOP: "#e03232",
-      HUD_COLOUR_PAUSEMAP_TINT_HALF: "#1e1e1e",
-      HUD_COLOUR_SCRIPT_VARIABLE_2: "#000000",
-      HUD_COLOUR_VIDEO_EDITOR_AMBIENT: "#f0c850",
-      HUD_COLOUR_VIDEO_EDITOR_AMBIENT_DARK: "#ff8555",
-      HUD_COLOUR_VIDEO_EDITOR_AMBIENT_LIGHT: "#ffc2aa",
-      HUD_COLOUR_VIDEO_EDITOR_AMBIENT_MID: "#ff8555",
-      HUD_COLOUR_LOW_FLOW: "#f0c850",
+const colorMap ={
+  0: "#FFFFFF",
+  1: "#F0F0F0",
+  2: "#000000",
+  3: "#9B9B9B",
+  4: "#CDCDCD",
+  5: "#4D4D4D",
+  6: "#E03232",
+  7: "#F09999",
+  8: "#701919",
+  9: "#5BD6E5",
+  10: "#AEDBF2",
+  11: "#2F5C73",
+  12: "#F0C850",
+  13: "#FEEBA9",
+  14: "#7E6B29",
+  15: "#FF8555",
+  16: "#FFC2AA",
+  17: "#7F422A",
+  18: "#72CC72",
+  19: "#B9E6B9",
+  20: "#396639",
+  21: "#8466E2",
+  22: "#C0B3EF",
+  23: "#43396F",
+  24: "#CB3694",
+  25: "#359A47",
+  26: "#5BD6E5",
+  27: "#EB2427",
+  28: "#C25050",
+  29: "#9C6EAF",
+  30: "#FF7BC4",
+  31: "#F79F7B",
+  32: "#B29084",
+  33: "#8DCEA7",
+  34: "#71A9AF",
+  35: "#D3D1E7",
+  36: "#907F99",
+  37: "#6AC4BF",
+  38: "#D6C499",
+  39: "#EA8E50",
+  40: "#98CBEA",
+  41: "#B26287",
+  42: "#908E7A",
+  43: "#A6755E",
+  44: "#AFA8A8",
+  45: "#E88E9B",
+  46: "#BBD65B",
+  47: "#0C7B56",
+  48: "#7BC4FF",
+  49: "#AB3CE6",
+  50: "#CEA90D",
+  51: "#4763AD",
+  52: "#2AA6B9",
+  53: "#BA9D7D",
+  54: "#C9E1FF",
+  55: "#F0F096",
+  56: "#ED8CA1",
+  57: "#F98A8A",
+  58: "#FCEFA6",
+  59: "#F0F0F0",
+  60: "#9FC9A6",
+  61: "#8C8C8C",
+  62: "#8C8C8C",
+  63: "#282828",
+  64: "#F0A000",
+  65: "#F0A000",
+  66: "#F0C850",
+  67: "#8C8C8C",
+  68: "#3C3C3C",
+  69: "#1E1E1E",
+  70: "#8C8C8C",
+  71: "#4B4B4B",
+  72: "#323232",
+  73: "#5F5F5F",
+  74: "#646464",
+  75: "#5D2727",
+  76: "#4D3759",
+  77: "#7C3E63",
+  78: "#785050",
+  79: "#574842",
+  80: "#4A6753",
+  81: "#3C5558",
+  82: "#696940",
+  83: "#483F4C",
+  84: "#35625F",
+  85: "#6B624C",
+  86: "#754728",
+  87: "#4C6575",
+  88: "#41232F",
+  89: "#48473D",
+  90: "#553A2F",
+  91: "#575454",
+  92: "#74474D",
+  93: "#5D6B2D",
+  94: "#063D2B",
+  95: "#3D627F",
+  96: "#551E73",
+  97: "#675406",
+  98: "#233156",
+  99: "#15535C",
+  100: "#5D623E",
+  101: "#64707F",
+  102: "#78784B",
+  103: "#984C5D",
+  104: "#7C4545",
+  105: "#0A2B32",
+  106: "#5F5F0A",
+  107: "#B48261",
+  108: "#9699A1",
+  109: "#D6B563",
+  110: "#A6DDBC",
+  111: "#1D6499",
+  112: "#D6740F",
+  113: "#877D8E",
+  114: "#E577B9",
+  115: "#FCEFA6",
+  116: "#2D6EB9",
+  117: "#000000BA",
+  118: "#5BD6E5",
+  119: "#C25050",
+  120: "#F0C850",
+  121: "#72CC72",
+  122: "#72CC72",
+  123: "#16375C",
+  124: "#9A9A9A",
+  125: "#C25050",
+  126: "#FC73C9",
+  127: "#FCB131",
+  128: "#000000",
+  129: "#6DF7CC",
+  130: "#F16522",
+  131: "#D6BD61",
+  132: "#701919",
+  133: "#2F5C73",
+  134: "#5BD6E5",
+  135: "#EA991C",
+  136: "#0B377B",
+  137: "#92C83E",
+  138: "#EA991C",
+  139: "#425994",
+  140: "#000000BA",
+  141: "#72CC72",
+  142: "#A44CF2",
+  143: "#65B4D4",
+  144: "#ABEDAB",
+  145: "#FFA357",
+  146: "#F0F0F0",
+  147: "#EBEF1E",
+  148: "#FF950E",
+  149: "#F63CA1",
+  150: "#D2A6F9",
+  151: "#522679",
+  152: "#0000004D",
+  153: "#486774",
+  154: "#557655",
+  155: "#7F512B",
+  156: "#F0C850",
+  157: "#000000D7",
+  158: "#6464647F",
+  159: "#2D6EB9",
+  160: "#F0F0F0BF",
+  161: "#000000BA",
+  162: "#E03232",
+  163: "#000000D7",
+  164: "#004785",
+  165: "#000000",
+  166: "#217625",
+  167: "#256628",
+  168: "#EA991C",
+  169: "#E18C08",
+  170: "#142800",
+  171: "#30FFFF",
+  172: "#30FF00",
+  173: "#B05000",
+  174: "#7F0000",
+  175: "#35A6E0",
+  176: "#A24F9D",
+  177: "#68C08D",
+  178: "#1D6499",
+  179: "#EA991C",
+  180: "#F0A001",
+  181: "#3B2239",
+  182: "#294435",
+  183: "#523A0A",
+  184: "#256628BA",
+  185: "#F0C850",
+  186: "#504622",
+  187: "#FF8555",
+  188: "#FFC2AA",
+  189: "#FF8555",
+  190: "#F0C850",
+  191: "#7E6B29",
+  192: "#F79F7B",
+  193: "#E286BB",
+  194: "#EFEE97",
+  195: "#71A9AF",
+  196: "#A08CC1",
+  197: "#8DCEA7",
+  198: "#B5D6EA",
+  199: "#B29084",
+  200: "#008472",
+  201: "#D85575",
+  202: "#1E6498",
+  203: "#2BB575",
+  204: "#E98D4F",
+  205: "#89D2D7",
+  206: "#867D8D",
+  207: "#6D2221",
+  208: "#FF0000",
+  209: "#FFFF00",
+  210: "#00FF00",
+  211: "#00FFFF",
+  212: "#0000FF",
+  213: "#FF00FF",
+  214: "#2688EA",
+  215: "#E03232",
+  216: "#9AB236",
+  217: "#5D6B2D",
+  218: "#CEA90D",
+  219: "#675406",
+  220: "#009797",
+  221: "#057771",
+  222: "#970000",
+  223: "#002828",
+  224: "#E91E63",
+  225: "#474973",
+  226: "#FFFFFF",
+  227: "#FFFFFF",
+  228: "#FFFFFF",
+  229: "#FFFFFF",
+  230: "#FFFFFF",
+  231: "#FFFFFF",
+  232: "#FFFFFF",
+  233: "#FFFFFF",
+  234: "#1DEFC3"
+};
+    const input = document.getElementById("tagInput");
+    const output = document.getElementById("previewOutput");
 
-    };
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const plainText = (e.clipboardData || window.clipboardData).getData("text");
+      const selectionStart = input.selectionStart;
+      const selectionEnd = input.selectionEnd;
+      const currentValue = input.value;
+      const newValue = currentValue.slice(0, selectionStart) + plainText + currentValue.slice(selectionEnd);
+      input.value = newValue;
+      input.setSelectionRange(selectionStart + plainText.length, selectionStart + plainText.length);
+      renderPreview();
+    });
 
-const input = document.getElementById("tagInput");
-  const output = document.getElementById("previewOutput");
+    input.addEventListener("input", renderPreview);
 
-  input.addEventListener("paste", (e) => {
-    e.preventDefault();
-    const plainText = (e.clipboardData || window.clipboardData).getData("text");
-    const selectionStart = input.selectionStart;
-    const selectionEnd = input.selectionEnd;
-    const currentValue = input.value;
-    const newValue = currentValue.slice(0, selectionStart) + plainText + currentValue.slice(selectionEnd);
-    input.value = newValue;
-    input.setSelectionRange(selectionStart + plainText.length, selectionStart + plainText.length);
-    renderPreview();
-  });
-
-input.addEventListener("keydown", function(e) {
-  if (e.key === "(") {
-    e.preventDefault();
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-    const value = input.value;
-    // Insert () and place cursor between
-    input.value = value.slice(0, start) + "()" + value.slice(end);
-    input.setSelectionRange(start + 1, start + 1);
-    renderPreview();
-  }
-});
-
-  input.addEventListener("input", renderPreview);
-
-  function renderPreview() {
-    output.innerHTML = parseTagToHtml(input.value);
-  }
-
-
-function parseTagToHtml(input) {
-  input = input.replace(/HUDCOLOUR/g, "HUD_COLOUR_");
-
-  const regex = /\((HUD_COLOUR_[A-Z0-9_]+)\)/g;
-  let match;
-  let lastIndex = 0;
-  let currentColor = "#FFFFFF";
-  let result = "";
-
-  while ((match = regex.exec(input)) !== null) {
-    // Add text before the tag, in the current color
-    const rawText = input.slice(lastIndex, match.index);
-    for (let char of rawText) {
-      result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+    function renderPreview() {
+      output.innerHTML = parseTagToHtml(input.value);
     }
-    // Update color for next text
-    const colorCode = match[1];
-    currentColor = colorMap[colorCode] || "#FFFFFF";
-    lastIndex = match.index + match[0].length;
-  }
 
-  // Add the remaining text after the last tag
-  const remaining = input.slice(lastIndex);
-  for (let char of remaining) {
-    result += `<span class="char" style="color:${currentColor}">${char}</span>`;
-  }
+    function parseTagToHtml(input) {
 
-  return result;
-}
+      const regex = /~HC_(\d+)~/g;
+      let match;
+      let lastIndex = 0;
+      let currentColor = "#FFFFFF";
+      let result = "";
 
-input.value = "(HUD_COLOUR_BLUE)Made(HUD_COLOUR_PINK)By(HUD_COLOUR_BLUE)Arthur(HUD_COLOUR_PINK)V.";
-renderPreview();
+      while ((match = regex.exec(input)) !== null) {
 
-</script>
+        const rawText = input.slice(lastIndex, match.index);
+        for (let char of rawText) {
+          result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+        }
 
-<script>
-document.addEventListener("contextmenu", event => event.preventDefault());
-document.addEventListener("keydown", event => {
-    if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) {
-        event.preventDefault();
+        const colorIndex = match[1];
+        currentColor = colorMap[colorIndex] || "#FFFFFF";
+        lastIndex = match.index + match[0].length;
+      }
+
+
+      const remaining = input.slice(lastIndex);
+      for (let char of remaining) {
+        result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+      }
+
+      return result;
     }
-});
-</script>
-<h1 style="color: #B200FF; font-weight: bold;">
-  <a href="https://discord.com/invite/calirp" target="_blank" style="color: #B200FF; text-decoration: none;">
-    discord.gg/calirp
-  </a>
-</h1>
+
+    input.value = "~HC_9~Made~HC_24~ By ~HC_9~Arthur~HC_24~";
+    renderPreview();
+  </script>
+
+  <script>
+    document.addEventListener("contextmenu", event => event.preventDefault());
+    document.addEventListener("keydown", event => {
+        if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I")) {
+            event.preventDefault();
+        }
+    });
+  </script>
+  <h1 style="color: #B200FF; font-weight: bold;">
+    <a href="https://discord.com/invite/calirp" target="_blank" style="color: #B200FF; text-decoration: none;">
+      discord.gg/calirp
+    </a>
+  </h1>
 </body>
-</html>
