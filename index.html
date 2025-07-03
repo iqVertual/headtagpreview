@@ -305,6 +305,21 @@ const colorMap ={
       renderPreview();
     });
 
+input.addEventListener("keydown", function(e) {
+  if (e.key === "~") {
+    e.preventDefault();
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const before = input.value.substring(0, start);
+    const after = input.value.substring(end);
+    const insertText = "~HC_~";
+    input.value = before + insertText + after;
+    const newPos = before.length + 4; 
+    input.setSelectionRange(newPos, newPos);
+    renderPreview();
+  }
+});
+
     input.addEventListener("input", renderPreview);
 
     function renderPreview() {
