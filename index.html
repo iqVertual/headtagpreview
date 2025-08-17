@@ -293,8 +293,6 @@
       </script>
   <!-- Color picker will be moved into the sidebar below -->
   <div id="livePreview" class="preview" style="margin-top: 18px;"></div>
-  <button id="generateBtn" style="margin-bottom: 16px; background: linear-gradient(90deg, #7400b8 0%, #00b4d8 100%); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px #0003;">Get Code</button>
-  <div id="resultContainer" style="margin-top: 18px;"></div>
     <a href="https://discord.com/invite/calirp"
       style="font-weight: bold; color: rgb(185, 6, 255); text-transform: uppercase; text-decoration: underline; font-size: 1em; margin-top: 16px; display: block; text-align: right;"
       target="_blank">
@@ -624,18 +622,10 @@ const colorMap ={
         const val = input.value;
         const htmlPreview = parseTagToHtml(val);
         livePreview.innerHTML = htmlPreview;
-        document.getElementById('resultContainer').innerHTML = '';
         livePreview.style.display = 'block';
       }
       input.addEventListener('input', updateLivePreview);
       updateLivePreview();
-
-      document.getElementById('generateBtn').addEventListener('click', () => {
-        const val = input.value;
-        const codeBlock = `<div style='background:#181c24;padding:10px 12px;border-radius:6px;margin-top:10px;word-break:break-all;'><b>Place this in your headtag ticket:</b><br><code style='color:#00b4d8;font-size:1.1em;'>${val.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></div>`;
-        document.getElementById('resultContainer').innerHTML = codeBlock;
-        livePreview.style.display = 'none';
-      });
 
 
     const sidebar = document.getElementById('colorSidebar');
@@ -654,8 +644,8 @@ const colorMap ={
       }
     });
 
-    input.value = "~HC_9~Made~HC_24~ By ~HC_9~Arthur~HC_24~ V";
-    renderPreview();
+  input.value = "~HC_9~Made~HC_24~ By ~HC_9~Arthur~HC_24~ V";
+  updateLivePreview();
   </script>
 
   <script>
