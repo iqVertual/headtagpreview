@@ -6,6 +6,28 @@
   <link rel="icon" type="image/png" href="assets/favicon.png">
 
   <style>
+    /* Animated gradient for generate button */
+    #generateBtn {
+      background: linear-gradient(90deg, #7400b8, #b106ff, #00b4d8, #00b4d8, #7400b8);
+      background-size: 300% 300%;
+      background-position: 0% 50%;
+      transition: background-position 0.3s;
+      animation: gradient-move-btn 8s ease-in-out infinite alternate;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+    }
+
+    @keyframes gradient-move-btn {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
     .typewriter {
       display: block;
       margin-left: auto;
@@ -269,7 +291,10 @@
         });
         animatedDiv.style.display = 'none';
       </script>
-    <div class="preview" id="previewOutput"></div>
+  <!-- Color picker will be moved into the sidebar below -->
+  <div id="livePreview" class="preview" style="margin-top: 18px;"></div>
+  <button id="generateBtn" style="margin-bottom: 16px; background: linear-gradient(90deg, #7400b8 0%, #00b4d8 100%); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px #0003;">Get Code</button>
+  <div id="resultContainer" style="margin-top: 18px;"></div>
     <a href="https://discord.com/invite/calirp"
       style="font-weight: bold; color: rgb(185, 6, 255); text-transform: uppercase; text-decoration: underline; font-size: 1em; margin-top: 16px; display: block; text-align: right;"
       target="_blank">
@@ -277,8 +302,9 @@
     </a>
     </div>
     <aside id="colorSidebar" style="width: 260px; max-height: 80vh; overflow-y: auto; background: #181818; border-radius: 10px; padding: 16px 8px 16px 16px; margin-left: 32px; box-shadow: 0 2px 8px #0002; position: relative; transition: transform 0.3s, opacity 0.3s;">
-  <button id="toggleSidebar" style="position: absolute; left: -36px; top: 20px; z-index: 100; background: #222; color: #00b4d8; border: none; border-radius: 6px 0 0 6px; padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 1.4em; box-shadow: 0 2px 8px #0006;">→</button>
+      <button id="toggleSidebar" style="position: absolute; left: -36px; top: 20px; z-index: 100; background: #222; color: #00b4d8; border: none; border-radius: 6px 0 0 6px; padding: 6px 12px; cursor: pointer; font-weight: bold; font-size: 1.4em; box-shadow: 0 2px 8px #0006;">→</button>
       <h2 style="color: #00b4d8; font-size: 1.2em; margin-bottom: 12px;">CFX Colors</h2>
+      <div id="colorPickerContainer" style="margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px;"></div>
       <div id="colorList"></div>
     </aside>
   </div>
@@ -521,90 +547,95 @@ const colorMap ={
   233: "#FFFFFF",
   234: "#1DEFC3"
 };
-    const input = document.getElementById("tagInput");
-    const output = document.getElementById("previewOutput");
+  const input = document.getElementById("tagInput");
+  const livePreview = document.getElementById("livePreview");
 
-    input.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const plainText = (e.clipboardData || window.clipboardData).getData("text");
-      const selectionStart = input.selectionStart;
-      const selectionEnd = input.selectionEnd;
-      const currentValue = input.value;
-      const newValue = currentValue.slice(0, selectionStart) + plainText + currentValue.slice(selectionEnd);
-      input.value = newValue;
-      input.setSelectionRange(selectionStart + plainText.length, selectionStart + plainText.length);
-      renderPreview();
-    });
+      function renderColorPicker() {
+        const picker = document.getElementById('colorPickerContainer');
+        picker.innerHTML = '';
+        Object.entries(colorMap).forEach(([idx, hex]) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.title = `Insert color index ${idx}`;
+          btn.style.background = hex;
+          btn.style.border = '2px solid #333';
+          btn.style.width = '32px';
+          btn.style.height = '32px';
+          btn.style.borderRadius = '6px';
+          btn.style.margin = '0 2px 2px 0';
+          btn.style.cursor = 'pointer';
+          btn.style.outline = 'none';
+          btn.style.boxShadow = '0 1px 4px #0002';
+          btn.addEventListener('click', () => {
+            insertColorIndex(idx);
+          });
+          picker.appendChild(btn);
+        });
+      }
+      renderColorPicker();
 
-input.addEventListener("keydown", function(e) {
-  if (e.key === "~") {
-    e.preventDefault();
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-    const before = input.value.substring(0, start);
-    const after = input.value.substring(end);
-    const insertText = "~HC_~";
-    input.value = before + insertText + after;
-    const newPos = before.length + 4; 
-    input.setSelectionRange(newPos, newPos);
-    renderPreview();
-  }
-});
+      function insertColorIndex(idx) {
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const before = input.value.substring(0, start);
+        const after = input.value.substring(end);
+        const selected = input.value.substring(start, end);
+        let insertText;
+        let newPos;
+        if (selected.length > 0) {
+          insertText = `~HC_${idx}~${selected}`;
+          input.value = before + insertText + after;
+          input.focus();
+          input.setSelectionRange(before.length, before.length + insertText.length);
+        } else {
+          insertText = `~HC_${idx}~`;
+          input.value = before + insertText + after;
+          input.focus();
+          newPos = before.length + insertText.length;
+          input.setSelectionRange(newPos, newPos);
+        }
+      }
 
-    input.addEventListener("input", renderPreview);
-
-    function renderPreview() {
-      output.innerHTML = parseTagToHtml(input.value);
-    }
-
-    function parseTagToHtml(input) {
-
-      const regex = /~HC_(\d+)~/g;
-      let match;
-      let lastIndex = 0;
-      let currentColor = "#FFFFFF";
-      let result = "";
-
-      while ((match = regex.exec(input)) !== null) {
-
-        const rawText = input.slice(lastIndex, match.index);
-        for (let char of rawText) {
+      function parseTagToHtml(input) {
+        const regex = /~HC_(\d+)~/g;
+        let match;
+        let lastIndex = 0;
+        let currentColor = "#FFFFFF";
+        let result = "";
+        while ((match = regex.exec(input)) !== null) {
+          const rawText = input.slice(lastIndex, match.index);
+          for (let char of rawText) {
+            result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+          }
+          const colorIndex = match[1];
+          currentColor = colorMap[colorIndex] || "#FFFFFF";
+          lastIndex = match.index + match[0].length;
+        }
+        const remaining = input.slice(lastIndex);
+        for (let char of remaining) {
           result += `<span class="char" style="color:${currentColor}">${char}</span>`;
         }
-
-        const colorIndex = match[1];
-        currentColor = colorMap[colorIndex] || "#FFFFFF";
-        lastIndex = match.index + match[0].length;
+        return result;
       }
 
 
-      const remaining = input.slice(lastIndex);
-      for (let char of remaining) {
-        result += `<span class="char" style="color:${currentColor}">${char}</span>`;
+
+      function updateLivePreview() {
+        const val = input.value;
+        const htmlPreview = parseTagToHtml(val);
+        livePreview.innerHTML = htmlPreview;
+        document.getElementById('resultContainer').innerHTML = '';
+        livePreview.style.display = 'block';
       }
+      input.addEventListener('input', updateLivePreview);
+      updateLivePreview();
 
-      return result;
-    }
-
-    function renderColorSidebar() {
-      const colorList = document.getElementById('colorList');
-      colorList.innerHTML = '';
-      Object.entries(colorMap).forEach(([idx, hex]) => {
-        const swatch = document.createElement('div');
-        swatch.style.display = 'flex';
-        swatch.style.alignItems = 'center';
-        swatch.style.marginBottom = '8px';
-        swatch.innerHTML = `
-          <div style="width: 32px; height: 32px; border-radius: 6px; background: ${hex}; border: 1px solid #333; margin-right: 10px; display: flex; align-items: center; justify-content: center;"></div>
-          <span style="display: flex; flex-direction: column; align-items: flex-start;">
-            <span style="color: #00b4d8; font-size: 0.85em; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.8;">Index</span>
-            <span style="color: #fff; font-size: 1.1em; font-weight: bold; background: #232946; padding: 2px 8px; border-radius: 6px; margin-top: 2px; box-shadow: 0 1px 4px #0002;">${idx}</span>
-          </span>
-        `;
-        colorList.appendChild(swatch);
+      document.getElementById('generateBtn').addEventListener('click', () => {
+        const val = input.value;
+        const codeBlock = `<div style='background:#181c24;padding:10px 12px;border-radius:6px;margin-top:10px;word-break:break-all;'><b>Place this in your headtag ticket:</b><br><code style='color:#00b4d8;font-size:1.1em;'>${val.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></div>`;
+        document.getElementById('resultContainer').innerHTML = codeBlock;
+        livePreview.style.display = 'none';
       });
-    }
-    renderColorSidebar();
 
 
     const sidebar = document.getElementById('colorSidebar');
