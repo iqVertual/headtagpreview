@@ -238,6 +238,23 @@
 </head>
 <body>
   <div id="tsparticles"></div>
+  <!-- Tutorial Modal -->
+  <div id="tutorialModal" style="display: flex; align-items: center; justify-content: center; position: fixed; z-index: 99999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(24,28,36,0.92); backdrop-filter: blur(2px);">
+    <div style="background: #232946; color: #fff; border-radius: 16px; box-shadow: 0 8px 32px #0008; padding: 36px 32px 28px 32px; max-width: 420px; width: 90vw; position: relative; text-align: left;">
+      <button id="closeTutorial" style="position: absolute; top: 16px; right: 16px; background: #00b4d8; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.3em; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px #0003;">&times;</button>
+      <h2 style="margin-top: 0; color: #00b4d8;">How to use the Tag Previewer</h2>
+      <ol style="margin: 0 0 0 1.2em; padding: 0; color: #bfc9d1; font-size: 1.08em;">
+        <li>Type or paste your tag in the input box.</li>
+        <br>
+        <li>Click a color in the sidebar to insert its color code at the cursor or select the word and click the color to change the text color.</li>
+        <br>
+        <li>The preview updates live below the input.</li>
+        <br>
+        <li>Copy your updated input, for your tag to be properly formatted for use elsewhere.</li>
+      </ol>
+      <div style="margin-top: 1.2em; color: #bfc9d1; font-size: 0.98em;">Tip: Hover over colors to see their index. You can select text and then click a color to wrap it.</div>
+    </div>
+  </div>
   <nav style="margin-bottom: 24px;">
   </nav>
 
@@ -269,7 +286,7 @@
         typewriterText.classList.add('animated');
         typeWriter();
       </script>
-        <textarea id="tagInput" rows="4" placeholder="~HC_9~Made~HC_24~ By ~HC_9~Arthur~HC_24~ V" style="position: relative; background: #232946; z-index: 3;"></textarea>
+        <textarea id="tagInput" rows="4" placeholder="~HC_9~Made~HC_24~ By ~HC_9~iq~HC_24~ Vertual" style="position: relative; background: #232946; z-index: 3;"></textarea>
         <div id="animatedTextDiv" class="animated-text-div"></div>
       </div>
       <script>
@@ -305,6 +322,13 @@
   </div>
 
   <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('tutorialModal');
+      const closeBtn = document.getElementById('closeTutorial');
+      closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+      });
+    });
 const colorMap ={
   0: "#FFFFFF",
   1: "#F0F0F0",
@@ -589,6 +613,7 @@ const colorMap ={
           newPos = before.length + insertText.length;
           input.setSelectionRange(newPos, newPos);
         }
+        updateLivePreview();
       }
 
       function parseTagToHtml(input) {
@@ -641,7 +666,7 @@ const colorMap ={
       }
     });
 
-  input.value = "~HC_9~Made~HC_24~ By ~HC_9~Arthur~HC_24~ V";
+  input.value = "~HC_9~Made~HC_24~ By ~HC_9~iq~HC_24~ Vertual";
   updateLivePreview();
   </script>
 
